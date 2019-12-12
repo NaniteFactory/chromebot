@@ -1,0 +1,4 @@
+*.log
+debug
+*.exe
+__ignore/
