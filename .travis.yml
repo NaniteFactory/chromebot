@@ -1,7 +1,17 @@
 dist: bionic
 language: go
+addons:
+    apt:
+        packages:
+            - libxss1
+            - libgconf2-4
+            - libappindicator1
+            - libindicator7
+            - libgles2-mesa-dev
 go:
   - 1.13.x
+  - 1.12.x
+  - tip
 env:
   - GO111MODULE=off
 # services:
@@ -10,21 +20,13 @@ addons:
   apt:
     chrome: stable
 before_install:
-  - go get -d -t
-  - mkdir -p $GOPATH/src/github.com/mailru $GOPATH/src/github.com/chromedp
-  - rm -rf $GOPATH/src/github.com/mailru/easyjson
-  - git clone https://github.com/kenshaw/easyjson.git $GOPATH/src/github.com/mailru/easyjson
-  - cd $GOPATH/src/github.com/mailru/easyjson
-  - go get -d -t
-  - git clone https://github.com/chromedp/cdproto.git $GOPATH/src/github.com/chromedp/cdproto
-  - cd $GOPATH/src/github.com/chromedp/cdproto
-  - go get -d -t
-  - go install
-  - git clone https://github.com/chromedp/chromedp.git $GOPATH/src/github.com/chromedp/chromedp
-  - cd $GOPATH/src/github.com/chromedp/chromedp
-  - go get -d -t
-  - go install
-script:
+  # - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+  # - sudo dpkg -i google-chrome-stable_current_amd64.deb
+  # - google-chrome
+  - cd $HOME
+  - mv $GOPATH/src/github.com/NaniteFactory $GOPATH/src/github.com/nanitefactory # lowercase 
   - cd $GOPATH/src/github.com/nanitefactory/chromebot
-  - go build
-  - go test -v
+install:
+  - go get -t -v ./...
+script:
+  - go test -v -headless

@@ -10,7 +10,7 @@ import (
 )
 
 func TestTab(t *testing.T) {
-	c := chromebot.New(false)
+	c := chromebot.New(bFlagHeadless)
 	defer c.Close()
 	c.AddNewTab()
 	//

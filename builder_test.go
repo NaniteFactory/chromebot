@@ -13,7 +13,7 @@ func TestBuilder(t *testing.T) {
 		WithFlags(chromebot.DefaultBuilderFlags).
 		WithExecAllocatorOption(
 			chromedp.DisableGPU,
-			chromedp.Flag("headless", false),
+			chromedp.Flag("headless", bFlagHeadless),
 		).
 		WithBrowserOption().
 		WithContextOption().
@@ -27,9 +27,9 @@ func TestBuilder(t *testing.T) {
 func TestBuilderDeadline(t *testing.T) {
 	c := chromebot.NewBuilder().WithFlags(func() chromebot.BuilderFlags {
 		optFlags := chromebot.DefaultBuilderFlags
-		optFlags.Headless = false
-		optFlags.MuteAudio = false
-		optFlags.HideScrollbars = false
+		optFlags.Headless = bFlagHeadless
+		optFlags.MuteAudio = bFlagHeadless
+		optFlags.HideScrollbars = bFlagHeadless
 		return optFlags
 	}()).WithDeadline(time.Now().Add(time.Second * 3)).NewChrome()
 	c.AddNewTab()

@@ -5,10 +5,41 @@ import (
 	"log"
 	"testing"
 	"time"
+	"flag"
+	"os/exec"
+	"strings"
+	"strconv"
 
 	"github.com/chromedp/chromedp"
 	"github.com/nanitefactory/chromebot"
 )
+
+var bFlagHeadless = false
+
+func init() {
+	flag.BoolVar(&bFlagHeadless, "headless", false, "If set to true, the browser runs in headless mode.")
+	{
+		major, minor, _, err := func() (major int, minor int, patch int, err error) {
+			cmd := exec.Command("go", "version")
+			out, err := cmd.Output()
+			if err != nil {
+				return
+			}
+			semantic := strings.Split(strings.Fields(strings.TrimLeft(string(out), "go version go"))[0], ".")
+			patch, err = strconv.Atoi(semantic[2])
+			minor, err = strconv.Atoi(semantic[1])
+			major, err = strconv.Atoi(semantic[0])
+			return
+		}() // getGoVersion
+		if err == nil && (major < 1 || (major == 1 && minor < 13)) {
+			Init() // if 1.12 or below for sure
+		}
+	}
+}
+
+func Init() {
+	flag.Parse()
+}
 
 func TestChromedp(t *testing.T) {
 	ctx, cancel := chromedp.NewExecAllocator(context.Background(), chromedp.Headless)
@@ -18,7 +49,9 @@ func TestChromedp(t *testing.T) {
 }
 
 func TestNewChrome(t *testing.T) {
-	chromebot.New(false).Close()
+	if !bFlagHeadless {
+		chromebot.New(bFlagHeadless).Close()
+	}
 	chromebot.New(true).Close()
 }
 
@@ -28,7 +61,7 @@ func TestChromeManyTabs(t *testing.T) {
 			panic("c.CountTabs() not working well")
 		}
 	}
-	c := chromebot.New(false)
+	c := chromebot.New(bFlagHeadless)
 	defer c.Close()
 	//
 	n := 1
@@ -58,7 +91,7 @@ func TestChromeManyTabs(t *testing.T) {
 }
 
 func TestChromeClose(t *testing.T) {
-	c1 := chromebot.New(false)
+	c1 := chromebot.New(bFlagHeadless)
 	defer c1.Close()
 	defer c1.Close()
 	defer c1.Close()
@@ -75,7 +108,7 @@ func TestChromeTabAsBrowser(t *testing.T) {
 			panic("must panic but it didn't panic")
 		}
 	}()
-	c := chromebot.New(false)
+	c := chromebot.New(bFlagHeadless)
 	defer c.Close()
 	c.AddNewTab(chromedp.WithBrowserOption(chromedp.WithBrowserLogf(func(str string, args ...interface{}) {
 		log.Println()
@@ -83,7 +116,7 @@ func TestChromeTabAsBrowser(t *testing.T) {
 }
 
 func TestDeadChrome(t *testing.T) {
-	c := chromebot.New(false)
+	c := chromebot.New(bFlagHeadless)
 	deadTab := c.Tab(0)
 	c.Close()
 	c.Close()

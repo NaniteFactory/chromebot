@@ -43,7 +43,7 @@ func ExampleNew() {
 
 func TestExampleNew(t *testing.T) {
 	// Start a browser
-	browser := chromebot.New(false)
+	browser := chromebot.New(bFlagHeadless)
 	defer browser.Close()
 	// Navigate
 	if err := browser.Tab(0).Run(
