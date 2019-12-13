@@ -2,13 +2,14 @@ package chromebot_test
 
 import (
 	"context"
+	"errors"
+	"flag"
 	"log"
+	"os/exec"
+	"strconv"
+	"strings"
 	"testing"
 	"time"
-	"flag"
-	"os/exec"
-	"strings"
-	"strconv"
 
 	"github.com/chromedp/chromedp"
 	"github.com/nanitefactory/chromebot"
@@ -26,8 +27,22 @@ func init() {
 				return
 			}
 			semantic := strings.Split(strings.Fields(strings.TrimLeft(string(out), "go version go"))[0], ".")
-			patch, err = strconv.Atoi(semantic[2])
-			minor, err = strconv.Atoi(semantic[1])
+			if len(semantic) > 3 {
+				err = errors.New("unexpected version")
+				return
+			}
+			if len(semantic) > 2 {
+				patch, err = strconv.Atoi(semantic[2])
+				if err != nil {
+					return
+				}
+			}
+			if len(semantic) > 1 {
+				minor, err = strconv.Atoi(semantic[1])
+				if err != nil {
+					return
+				}
+			}
 			major, err = strconv.Atoi(semantic[0])
 			return
 		}() // getGoVersion
