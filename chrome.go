@@ -109,7 +109,7 @@ func (c *Chrome) Dead() <-chan struct{} {
 // Note that the function is called synchronously when handling events.
 // The function should avoid blocking at all costs.
 // For example, any Actions must be run via a separate goroutine.
-func (c *Chrome) Listen(fn func(ev interface{})) error {
+func (c *Chrome) Listen(onBrowserEvent func(ev interface{})) error {
 	select {
 	case <-c.fin:
 		return errors.New("the browser is dead")
@@ -117,7 +117,7 @@ func (c *Chrome) Listen(fn func(ev interface{})) error {
 	}
 	c.tabMu.Lock()
 	defer c.tabMu.Unlock()
-	chromedp.ListenBrowser(c.tabs[0].ctx, fn)
+	chromedp.ListenBrowser(c.tabs[0].ctx, onBrowserEvent)
 	return nil
 }
 
