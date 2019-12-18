@@ -104,7 +104,7 @@ func (t *Tab) Run(actions ...chromedp.Action) error {
 // Note that the function is called synchronously when handling events.
 // The function should avoid blocking at all costs.
 // For example, any Actions must be run via a separate goroutine.
-func (t *Tab) Listen(fn func(ev interface{})) error {
+func (t *Tab) Listen(onEvent func(ev interface{})) error {
 	select {
 	case <-t.ctx.Done():
 		return errors.New("tab closed: " + t.ctx.Err().Error())
@@ -112,6 +112,6 @@ func (t *Tab) Listen(fn func(ev interface{})) error {
 		return errors.New("tab closed")
 	default:
 	}
-	chromedp.ListenTarget(t.ctx, fn)
+	chromedp.ListenTarget(t.ctx, onEvent)
 	return nil
 }
