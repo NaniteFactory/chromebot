@@ -117,7 +117,7 @@ func (doCSS CSS) GetBackgroundColors(nodeID cdp.NodeID) (retBackgroundColors []s
 //
 // returns:
 //  - `retComputedStyle`: Computed style for the specified DOM node.
-func (doCSS CSS) GetComputedStyleForNode(nodeID cdp.NodeID) (retComputedStyle []*css.ComputedProperty, err error) {
+func (doCSS CSS) GetComputedStyleForNode(nodeID cdp.NodeID) (retComputedStyle []*css.ComputedStyleProperty, err error) {
 	b := css.GetComputedStyleForNode(nodeID)
 	return b.Do(doCSS.ctxWithExecutor)
 }
@@ -319,7 +319,8 @@ func (doCSS CSS) StopRuleUsageTracking() (retRuleUsage []*css.RuleUsage, err err
 //
 // returns:
 //  - `retCoverage`
-func (doCSS CSS) TakeCoverageDelta() (retCoverage []*css.RuleUsage, err error) {
+//  - `retTimestamp`: Monotonically increasing time, in seconds.
+func (doCSS CSS) TakeCoverageDelta() (retCoverage []*css.RuleUsage, retTimestamp float64, err error) {
 	b := css.TakeCoverageDelta()
 	return b.Do(doCSS.ctxWithExecutor)
 }

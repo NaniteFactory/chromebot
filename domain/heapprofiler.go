@@ -138,10 +138,14 @@ func (doHeapProfiler HeapProfiler) StopSampling() (retProfile *heapprofiler.Samp
 //
 // parameters:
 //  - `reportProgress`: This can be nil. (Optional) If true 'reportHeapSnapshotProgress' events will be generated while snapshot is being taken when the tracking is stopped.
-func (doHeapProfiler HeapProfiler) StopTrackingHeapObjects(reportProgress *bool) (err error) {
+//  - `treatGlobalObjectsAsRoots`
+func (doHeapProfiler HeapProfiler) StopTrackingHeapObjects(reportProgress *bool, treatGlobalObjectsAsRoots *bool) (err error) {
 	b := heapprofiler.StopTrackingHeapObjects()
 	if reportProgress != nil {
 		b = b.WithReportProgress(*reportProgress)
+	}
+	if treatGlobalObjectsAsRoots != nil {
+		b = b.WithTreatGlobalObjectsAsRoots(*treatGlobalObjectsAsRoots)
 	}
 	return b.Do(doHeapProfiler.ctxWithExecutor)
 }
@@ -152,10 +156,14 @@ func (doHeapProfiler HeapProfiler) StopTrackingHeapObjects(reportProgress *bool)
 //
 // parameters:
 //  - `reportProgress`: This can be nil. (Optional) If true 'reportHeapSnapshotProgress' events will be generated while snapshot is being taken.
-func (doHeapProfiler HeapProfiler) TakeHeapSnapshot(reportProgress *bool) (err error) {
+//  - `treatGlobalObjectsAsRoots`: This can be nil. (Optional) If true, a raw snapshot without artificial roots will be generated
+func (doHeapProfiler HeapProfiler) TakeHeapSnapshot(reportProgress *bool, treatGlobalObjectsAsRoots *bool) (err error) {
 	b := heapprofiler.TakeHeapSnapshot()
 	if reportProgress != nil {
 		b = b.WithReportProgress(*reportProgress)
+	}
+	if treatGlobalObjectsAsRoots != nil {
+		b = b.WithTreatGlobalObjectsAsRoots(*treatGlobalObjectsAsRoots)
 	}
 	return b.Do(doHeapProfiler.ctxWithExecutor)
 }

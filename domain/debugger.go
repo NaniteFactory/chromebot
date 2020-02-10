@@ -130,23 +130,10 @@ func (doDebugger Debugger) GetPossibleBreakpoints(start *debugger.Location, end 
 //  - `scriptID`: Id of the script to get source for.
 //
 // returns:
-//  - `retScriptSource`: Script source.
-func (doDebugger Debugger) GetScriptSource(scriptID runtime.ScriptID) (retScriptSource string, err error) {
+//  - `retScriptSource`: Script source (empty in case of Wasm bytecode).
+//  - `retBytecode`: Wasm bytecode.
+func (doDebugger Debugger) GetScriptSource(scriptID runtime.ScriptID) (retScriptSource string, retBytecode []byte, err error) {
 	b := debugger.GetScriptSource(scriptID)
-	return b.Do(doDebugger.ctxWithExecutor)
-}
-
-// GetWasmBytecode returns bytecode for the WebAssembly script with given id.
-//
-// See: https://chromedevtools.github.io/devtools-protocol/tot/Debugger#method-getWasmBytecode
-//
-// parameters:
-//  - `scriptID`: Id of the Wasm script to get source for.
-//
-// returns:
-//  - `retBytecode`: Script source.
-func (doDebugger Debugger) GetWasmBytecode(scriptID runtime.ScriptID) (retBytecode []byte, err error) {
-	b := debugger.GetWasmBytecode(scriptID)
 	return b.Do(doDebugger.ctxWithExecutor)
 }
 

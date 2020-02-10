@@ -152,11 +152,12 @@ func (doRuntime Runtime) Enable() (err error) {
 //  - `throwOnSideEffect`: This can be nil. (Optional) Whether to throw an exception if side effect cannot be ruled out during evaluation. This implies disableBreaks below.
 //  - `timeout`: This can be nil. (Optional) Terminate execution after timing out (number of milliseconds).
 //  - `disableBreaks`: This can be nil. (Optional) Disable breakpoints during execution.
+//  - `replMode`: This can be nil. (Optional) Reserved flag for future REPL mode support. Setting this flag has currently no effect.
 //
 // returns:
 //  - `retResult`: Evaluation result.
 //  - `retExceptionDetails`: Exception details.
-func (doRuntime Runtime) Evaluate(expression string, objectGroup *string, includeCommandLineAPI *bool, silent *bool, contextID *runtime.ExecutionContextID, returnByValue *bool, generatePreview *bool, userGesture *bool, awaitPromise *bool, throwOnSideEffect *bool, timeout *runtime.TimeDelta, disableBreaks *bool) (retResult *runtime.RemoteObject, retExceptionDetails *runtime.ExceptionDetails, err error) {
+func (doRuntime Runtime) Evaluate(expression string, objectGroup *string, includeCommandLineAPI *bool, silent *bool, contextID *runtime.ExecutionContextID, returnByValue *bool, generatePreview *bool, userGesture *bool, awaitPromise *bool, throwOnSideEffect *bool, timeout *runtime.TimeDelta, disableBreaks *bool, replMode *bool) (retResult *runtime.RemoteObject, retExceptionDetails *runtime.ExceptionDetails, err error) {
 	b := runtime.Evaluate(expression)
 	if objectGroup != nil {
 		b = b.WithObjectGroup(*objectGroup)
@@ -190,6 +191,9 @@ func (doRuntime Runtime) Evaluate(expression string, objectGroup *string, includ
 	}
 	if disableBreaks != nil {
 		b = b.WithDisableBreaks(*disableBreaks)
+	}
+	if replMode != nil {
+		b = b.WithReplMode(*replMode)
 	}
 	return b.Do(doRuntime.ctxWithExecutor)
 }

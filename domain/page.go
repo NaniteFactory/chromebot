@@ -139,7 +139,8 @@ func (doPage Page) Enable() (err error) {
 //  - `retURL`: Manifest location.
 //  - `retErrors`
 //  - `retData`: Manifest content.
-func (doPage Page) GetAppManifest() (retURL string, retErrors []*page.AppManifestError, retData string, err error) {
+//  - `retParsed`: Parsed manifest properties
+func (doPage Page) GetAppManifest() (retURL string, retErrors []*page.AppManifestError, retData string, retParsed *page.AppManifestParsedProperties, err error) {
 	b := page.GetAppManifest()
 	return b.Do(doPage.ctxWithExecutor)
 }
@@ -149,9 +150,20 @@ func (doPage Page) GetAppManifest() (retURL string, retErrors []*page.AppManifes
 // See: https://chromedevtools.github.io/devtools-protocol/tot/Page#method-getInstallabilityErrors
 //
 // returns:
-//  - `retErrors`
-func (doPage Page) GetInstallabilityErrors() (retErrors []string, err error) {
+//  - `retInstallabilityErrors`
+func (doPage Page) GetInstallabilityErrors() (retInstallabilityErrors []*page.InstallabilityError, err error) {
 	b := page.GetInstallabilityErrors()
+	return b.Do(doPage.ctxWithExecutor)
+}
+
+// GetManifestIcons [no description].
+//
+// See: https://chromedevtools.github.io/devtools-protocol/tot/Page#method-getManifestIcons
+//
+// returns:
+//  - `retPrimaryIcon`
+func (doPage Page) GetManifestIcons() (retPrimaryIcon []byte, err error) {
+	b := page.GetManifestIcons()
 	return b.Do(doPage.ctxWithExecutor)
 }
 
@@ -643,8 +655,7 @@ func (doPage Page) WaitForDebugger() (err error) {
 // SetInterceptFileChooserDialog intercept file chooser requests and transfer
 // control to protocol clients. When file chooser interception is enabled,
 // native file chooser dialog is not shown. Instead, a protocol event
-// Page.fileChooserOpened is emitted. File chooser can be handled with
-// page.handleFileChooser command.
+// Page.fileChooserOpened is emitted.
 //
 // See: https://chromedevtools.github.io/devtools-protocol/tot/Page#method-setInterceptFileChooserDialog
 //
@@ -652,20 +663,5 @@ func (doPage Page) WaitForDebugger() (err error) {
 //  - `enabled`
 func (doPage Page) SetInterceptFileChooserDialog(enabled bool) (err error) {
 	b := page.SetInterceptFileChooserDialog(enabled)
-	return b.Do(doPage.ctxWithExecutor)
-}
-
-// HandleFileChooser accepts or cancels an intercepted file chooser dialog.
-//
-// See: https://chromedevtools.github.io/devtools-protocol/tot/Page#method-handleFileChooser
-//
-// parameters:
-//  - `action`
-//  - `files`: This can be nil. (Optional) Array of absolute file paths to set, only respected with accept action.
-func (doPage Page) HandleFileChooser(action page.HandleFileChooserAction, files []string) (err error) {
-	b := page.HandleFileChooser(action)
-	if files != nil {
-		b = b.WithFiles(files)
-	}
 	return b.Do(doPage.ctxWithExecutor)
 }

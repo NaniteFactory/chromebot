@@ -5,6 +5,8 @@ package domain
 import (
 	"context"
 
+	"github.com/chromedp/cdproto/cdp"
+	"github.com/chromedp/cdproto/network"
 	"github.com/chromedp/cdproto/storage"
 )
 
@@ -22,6 +24,52 @@ type Storage struct {
 //  - `storageTypes`: Comma separated list of StorageType to clear.
 func (doStorage Storage) ClearDataForOrigin(origin string, storageTypes string) (err error) {
 	b := storage.ClearDataForOrigin(origin, storageTypes)
+	return b.Do(doStorage.ctxWithExecutor)
+}
+
+// GetCookies returns all browser cookies.
+//
+// See: https://chromedevtools.github.io/devtools-protocol/tot/Storage#method-getCookies
+//
+// parameters:
+//  - `browserContextID`: This can be nil. (Optional) Browser context to use when called on the browser endpoint.
+//
+// returns:
+//  - `retCookies`: Array of cookie objects.
+func (doStorage Storage) GetCookies(browserContextID *cdp.BrowserContextID) (retCookies []*network.Cookie, err error) {
+	b := storage.GetCookies()
+	if browserContextID != nil {
+		b = b.WithBrowserContextID(*browserContextID)
+	}
+	return b.Do(doStorage.ctxWithExecutor)
+}
+
+// SetCookies sets given cookies.
+//
+// See: https://chromedevtools.github.io/devtools-protocol/tot/Storage#method-setCookies
+//
+// parameters:
+//  - `cookies`: Cookies to be set.
+//  - `browserContextID`: This can be nil. (Optional) Browser context to use when called on the browser endpoint.
+func (doStorage Storage) SetCookies(cookies []*network.CookieParam, browserContextID *cdp.BrowserContextID) (err error) {
+	b := storage.SetCookies(cookies)
+	if browserContextID != nil {
+		b = b.WithBrowserContextID(*browserContextID)
+	}
+	return b.Do(doStorage.ctxWithExecutor)
+}
+
+// ClearCookies clears cookies.
+//
+// See: https://chromedevtools.github.io/devtools-protocol/tot/Storage#method-clearCookies
+//
+// parameters:
+//  - `browserContextID`: This can be nil. (Optional) Browser context to use when called on the browser endpoint.
+func (doStorage Storage) ClearCookies(browserContextID *cdp.BrowserContextID) (err error) {
+	b := storage.ClearCookies()
+	if browserContextID != nil {
+		b = b.WithBrowserContextID(*browserContextID)
+	}
 	return b.Do(doStorage.ctxWithExecutor)
 }
 

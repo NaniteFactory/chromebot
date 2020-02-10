@@ -81,6 +81,12 @@ func (doCacheStorage CacheStorage) RequestCachedResponse(cacheID cachestorage.Ca
 //  - `retReturnCount`: Count of returned entries from this storage. If pathFilter is empty, it is the count of all entries from this storage.
 func (doCacheStorage CacheStorage) RequestEntries(cacheID cachestorage.CacheID, skipCount *int64, pageSize *int64, pathFilter *string) (retCacheDataEntries []*cachestorage.DataEntry, retReturnCount float64, err error) {
 	b := cachestorage.RequestEntries(cacheID)
+	if skipCount != nil {
+		b = b.WithSkipCount(*skipCount)
+	}
+	if pageSize != nil {
+		b = b.WithPageSize(*pageSize)
+	}
 	if pathFilter != nil {
 		b = b.WithPathFilter(*pathFilter)
 	}

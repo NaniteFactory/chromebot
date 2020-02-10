@@ -104,7 +104,7 @@ func (doInput Input) InsertText(text string) (err error) {
 //  - `deltaX`: This can be nil. (Optional) X delta in CSS pixels for mouse wheel event (default: 0).
 //  - `deltaY`: This can be nil. (Optional) Y delta in CSS pixels for mouse wheel event (default: 0).
 //  - `pointerType`: This can be nil. (Optional) Pointer type (default: "mouse").
-func (doInput Input) DispatchMouseEvent(typeVal input.MouseType, x float64, y float64, modifiers *input.Modifier, timestamp *input.TimeSinceEpoch, button *input.ButtonType, buttons *int64, clickCount *int64, deltaX *float64, deltaY *float64, pointerType *input.DispatchMouseEventPointerType) (err error) {
+func (doInput Input) DispatchMouseEvent(typeVal input.MouseType, x float64, y float64, modifiers *input.Modifier, timestamp *input.TimeSinceEpoch, button *input.MouseButton, buttons *int64, clickCount *int64, deltaX *float64, deltaY *float64, pointerType *input.DispatchMouseEventPointerType) (err error) {
 	b := input.DispatchMouseEvent(typeVal, x, y)
 	if modifiers != nil {
 		b = b.WithModifiers(*modifiers)
@@ -162,13 +162,13 @@ func (doInput Input) DispatchTouchEvent(typeVal input.TouchType, touchPoints []*
 //  - `type`: Type of the mouse event.
 //  - `x`: X coordinate of the mouse pointer in DIP.
 //  - `y`: Y coordinate of the mouse pointer in DIP.
-//  - `button`: Mouse button.
+//  - `button`: Mouse button. Only "none", "left", "right" are supported.
 //  - `timestamp`: This can be nil. (Optional) Time at which the event occurred (default: current time).
 //  - `deltaX`: This can be nil. (Optional) X delta in DIP for mouse wheel event (default: 0).
 //  - `deltaY`: This can be nil. (Optional) Y delta in DIP for mouse wheel event (default: 0).
 //  - `modifiers`: This can be nil. (Optional) Bit field representing pressed modifier keys. Alt=1, Ctrl=2, Meta/Command=4, Shift=8 (default: 0).
 //  - `clickCount`: This can be nil. (Optional) Number of times the mouse button was clicked (default: 0).
-func (doInput Input) EmulateTouchFromMouseEvent(typeVal input.MouseType, x int64, y int64, button input.ButtonType, timestamp *input.TimeSinceEpoch, deltaX *float64, deltaY *float64, modifiers *input.Modifier, clickCount *int64) (err error) {
+func (doInput Input) EmulateTouchFromMouseEvent(typeVal input.MouseType, x int64, y int64, button input.MouseButton, timestamp *input.TimeSinceEpoch, deltaX *float64, deltaY *float64, modifiers *input.Modifier, clickCount *int64) (err error) {
 	b := input.EmulateTouchFromMouseEvent(typeVal, x, y, button)
 	if timestamp != nil {
 		b = b.WithTimestamp(timestamp)
@@ -210,7 +210,7 @@ func (doInput Input) SetIgnoreInputEvents(ignore bool) (err error) {
 //  - `scaleFactor`: Relative scale factor after zooming (>1.0 zooms in, <1.0 zooms out).
 //  - `relativeSpeed`: This can be nil. (Optional) Relative pointer speed in pixels per second (default: 800).
 //  - `gestureSourceType`: This can be nil. (Optional) Which type of input events to be generated (default: 'default', which queries the platform for the preferred input type).
-func (doInput Input) SynthesizePinchGesture(x float64, y float64, scaleFactor float64, relativeSpeed *int64, gestureSourceType *input.GestureType) (err error) {
+func (doInput Input) SynthesizePinchGesture(x float64, y float64, scaleFactor float64, relativeSpeed *int64, gestureSourceType *input.GestureSourceType) (err error) {
 	b := input.SynthesizePinchGesture(x, y, scaleFactor)
 	if relativeSpeed != nil {
 		b = b.WithRelativeSpeed(*relativeSpeed)
@@ -239,7 +239,7 @@ func (doInput Input) SynthesizePinchGesture(x float64, y float64, scaleFactor fl
 //  - `repeatCount`: This can be nil. (Optional) The number of times to repeat the gesture (default: 0).
 //  - `repeatDelayMs`: This can be nil. (Optional) The number of milliseconds delay between each repeat. (default: 250).
 //  - `interactionMarkerName`: This can be nil. (Optional) The name of the interaction markers to generate, if not empty (default: "").
-func (doInput Input) SynthesizeScrollGesture(x float64, y float64, xDistance *float64, yDistance *float64, xOverscroll *float64, yOverscroll *float64, preventFling *bool, speed *int64, gestureSourceType *input.GestureType, repeatCount *int64, repeatDelayMs *int64, interactionMarkerName *string) (err error) {
+func (doInput Input) SynthesizeScrollGesture(x float64, y float64, xDistance *float64, yDistance *float64, xOverscroll *float64, yOverscroll *float64, preventFling *bool, speed *int64, gestureSourceType *input.GestureSourceType, repeatCount *int64, repeatDelayMs *int64, interactionMarkerName *string) (err error) {
 	b := input.SynthesizeScrollGesture(x, y)
 	if xDistance != nil {
 		b = b.WithXDistance(*xDistance)
@@ -285,7 +285,7 @@ func (doInput Input) SynthesizeScrollGesture(x float64, y float64, xDistance *fl
 //  - `duration`: This can be nil. (Optional) Duration between touchdown and touchup events in ms (default: 50).
 //  - `tapCount`: This can be nil. (Optional) Number of times to perform the tap (e.g. 2 for double tap, default: 1).
 //  - `gestureSourceType`: This can be nil. (Optional) Which type of input events to be generated (default: 'default', which queries the platform for the preferred input type).
-func (doInput Input) SynthesizeTapGesture(x float64, y float64, duration *int64, tapCount *int64, gestureSourceType *input.GestureType) (err error) {
+func (doInput Input) SynthesizeTapGesture(x float64, y float64, duration *int64, tapCount *int64, gestureSourceType *input.GestureSourceType) (err error) {
 	b := input.SynthesizeTapGesture(x, y)
 	if duration != nil {
 		b = b.WithDuration(*duration)

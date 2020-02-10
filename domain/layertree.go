@@ -24,8 +24,8 @@ type LayerTree struct {
 //  - `layerID`: The id of the layer for which we want to get the reasons it was composited.
 //
 // returns:
-//  - `retCompositingReasons`: A list of strings specifying reasons for the given layer to become composited.
-func (doLayerTree LayerTree) CompositingReasons(layerID layertree.LayerID) (retCompositingReasons []string, err error) {
+//  - `retCompositingReasonIds`: A list of strings specifying reason IDs for the given layer to become composited.
+func (doLayerTree LayerTree) CompositingReasons(layerID layertree.LayerID) (retCompositingReasonIds []string, err error) {
 	b := layertree.CompositingReasons(layerID)
 	return b.Do(doLayerTree.ctxWithExecutor)
 }

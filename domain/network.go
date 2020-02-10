@@ -300,10 +300,11 @@ func (doNetwork Network) SetCacheDisabled(cacheDisabled bool) (err error) {
 //  - `httpOnly`: This can be nil. (Optional) True if cookie is http-only.
 //  - `sameSite`: This can be nil. (Optional) Cookie SameSite type.
 //  - `expires`: This can be nil. (Optional) Cookie expiration date, session cookie if not set
+//  - `priority`: This can be nil. (Optional) Cookie Priority type.
 //
 // returns:
 //  - `retSuccess`: True if successfully set cookie.
-func (doNetwork Network) SetCookie(name string, value string, url *string, domain *string, path *string, secure *bool, httpOnly *bool, sameSite *network.CookieSameSite, expires *cdp.TimeSinceEpoch) (retSuccess bool, err error) {
+func (doNetwork Network) SetCookie(name string, value string, url *string, domain *string, path *string, secure *bool, httpOnly *bool, sameSite *network.CookieSameSite, expires *cdp.TimeSinceEpoch, priority *network.CookiePriority) (retSuccess bool, err error) {
 	b := network.SetCookie(name, value)
 	if url != nil {
 		b = b.WithURL(*url)
@@ -325,6 +326,9 @@ func (doNetwork Network) SetCookie(name string, value string, url *string, domai
 	}
 	if expires != nil {
 		b = b.WithExpires(expires)
+	}
+	if priority != nil {
+		b = b.WithPriority(*priority)
 	}
 	return b.Do(doNetwork.ctxWithExecutor)
 }

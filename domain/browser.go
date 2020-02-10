@@ -6,6 +6,7 @@ import (
 	"context"
 
 	"github.com/chromedp/cdproto/browser"
+	"github.com/chromedp/cdproto/cdp"
 	"github.com/chromedp/cdproto/target"
 )
 
@@ -23,7 +24,7 @@ type Browser struct {
 //  - `permission`: Descriptor of permission to override.
 //  - `setting`: Setting of the permission.
 //  - `browserContextID`: This can be nil. (Optional) Context to override. When omitted, default browser context is used.
-func (doBrowser Browser) SetPermission(origin string, permission *browser.PermissionDescriptor, setting browser.PermissionSetting, browserContextID *target.ID) (err error) {
+func (doBrowser Browser) SetPermission(origin string, permission *browser.PermissionDescriptor, setting browser.PermissionSetting, browserContextID *cdp.BrowserContextID) (err error) {
 	b := browser.SetPermission(origin, permission, setting)
 	if browserContextID != nil {
 		b = b.WithBrowserContextID(*browserContextID)
@@ -40,7 +41,7 @@ func (doBrowser Browser) SetPermission(origin string, permission *browser.Permis
 //  - `origin`
 //  - `permissions`
 //  - `browserContextID`: This can be nil. (Optional) BrowserContext to override permissions. When omitted, default browser context is used.
-func (doBrowser Browser) GrantPermissions(origin string, permissions []browser.PermissionType, browserContextID *target.BrowserContextID) (err error) {
+func (doBrowser Browser) GrantPermissions(origin string, permissions []browser.PermissionType, browserContextID *cdp.BrowserContextID) (err error) {
 	b := browser.GrantPermissions(origin, permissions)
 	if browserContextID != nil {
 		b = b.WithBrowserContextID(*browserContextID)
@@ -54,7 +55,7 @@ func (doBrowser Browser) GrantPermissions(origin string, permissions []browser.P
 //
 // parameters:
 //  - `browserContextID`: This can be nil. (Optional) BrowserContext to reset permissions. When omitted, default browser context is used.
-func (doBrowser Browser) ResetPermissions(browserContextID *target.BrowserContextID) (err error) {
+func (doBrowser Browser) ResetPermissions(browserContextID *cdp.BrowserContextID) (err error) {
 	b := browser.ResetPermissions()
 	if browserContextID != nil {
 		b = b.WithBrowserContextID(*browserContextID)

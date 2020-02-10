@@ -5,6 +5,7 @@ package domain
 import (
 	"context"
 
+	"github.com/chromedp/cdproto/cdp"
 	"github.com/chromedp/cdproto/target"
 )
 
@@ -96,7 +97,7 @@ func (doTarget Target) ExposeDevToolsProtocol(targetID target.ID, bindingName *s
 //
 // returns:
 //  - `retBrowserContextID`: The id of the context created.
-func (doTarget Target) CreateBrowserContext() (retBrowserContextID target.BrowserContextID, err error) {
+func (doTarget Target) CreateBrowserContext() (retBrowserContextID cdp.BrowserContextID, err error) {
 	b := target.CreateBrowserContext()
 	return b.Do(doTarget.ctxWithExecutor)
 }
@@ -108,7 +109,7 @@ func (doTarget Target) CreateBrowserContext() (retBrowserContextID target.Browse
 //
 // returns:
 //  - `retBrowserContextIds`: An array of browser context ids.
-func (doTarget Target) GetBrowserContexts() (retBrowserContextIds []target.BrowserContextID, err error) {
+func (doTarget Target) GetBrowserContexts() (retBrowserContextIds []cdp.BrowserContextID, err error) {
 	b := target.GetBrowserContexts()
 	return b.Do(doTarget.ctxWithExecutor)
 }
@@ -128,7 +129,7 @@ func (doTarget Target) GetBrowserContexts() (retBrowserContextIds []target.Brows
 //
 // returns:
 //  - `retTargetID`: The id of the page opened.
-func (doTarget Target) CreateTarget(url string, width *int64, height *int64, browserContextID *target.BrowserContextID, enableBeginFrameControl *bool, newWindow *bool, background *bool) (retTargetID target.ID, err error) {
+func (doTarget Target) CreateTarget(url string, width *int64, height *int64, browserContextID *cdp.BrowserContextID, enableBeginFrameControl *bool, newWindow *bool, background *bool) (retTargetID target.ID, err error) {
 	b := target.CreateTarget(url)
 	if width != nil {
 		b = b.WithWidth(*width)
@@ -172,7 +173,7 @@ func (doTarget Target) DetachFromTarget(sessionID *target.SessionID) (err error)
 //
 // parameters:
 //  - `browserContextID`
-func (doTarget Target) DisposeBrowserContext(browserContextID target.BrowserContextID) (err error) {
+func (doTarget Target) DisposeBrowserContext(browserContextID cdp.BrowserContextID) (err error) {
 	b := target.DisposeBrowserContext(browserContextID)
 	return b.Do(doTarget.ctxWithExecutor)
 }

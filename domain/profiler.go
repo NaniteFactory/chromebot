@@ -70,7 +70,10 @@ func (doProfiler Profiler) Start() (err error) {
 // parameters:
 //  - `callCount`: This can be nil. (Optional) Collect accurate call counts beyond simple 'covered' or 'not covered'.
 //  - `detailed`: This can be nil. (Optional) Collect block-based coverage.
-func (doProfiler Profiler) StartPreciseCoverage(callCount *bool, detailed *bool) (err error) {
+//
+// returns:
+//  - `retTimestamp`: Monotonically increasing time (in seconds) when the coverage update was taken in the backend.
+func (doProfiler Profiler) StartPreciseCoverage(callCount *bool, detailed *bool) (retTimestamp float64, err error) {
 	b := profiler.StartPreciseCoverage()
 	if callCount != nil {
 		b = b.WithCallCount(*callCount)
@@ -125,7 +128,8 @@ func (doProfiler Profiler) StopTypeProfile() (err error) {
 //
 // returns:
 //  - `retResult`: Coverage data for the current isolate.
-func (doProfiler Profiler) TakePreciseCoverage() (retResult []*profiler.ScriptCoverage, err error) {
+//  - `retTimestamp`: Monotonically increasing time (in seconds) when the coverage update was taken in the backend.
+func (doProfiler Profiler) TakePreciseCoverage() (retResult []*profiler.ScriptCoverage, retTimestamp float64, err error) {
 	b := profiler.TakePreciseCoverage()
 	return b.Do(doProfiler.ctxWithExecutor)
 }
@@ -138,5 +142,32 @@ func (doProfiler Profiler) TakePreciseCoverage() (retResult []*profiler.ScriptCo
 //  - `retResult`: Type profile for all scripts since startTypeProfile() was turned on.
 func (doProfiler Profiler) TakeTypeProfile() (retResult []*profiler.ScriptTypeProfile, err error) {
 	b := profiler.TakeTypeProfile()
+	return b.Do(doProfiler.ctxWithExecutor)
+}
+
+// EnableRuntimeCallStats enable run time call stats collection.
+//
+// See: https://chromedevtools.github.io/devtools-protocol/tot/Profiler#method-enableRuntimeCallStats
+func (doProfiler Profiler) EnableRuntimeCallStats() (err error) {
+	b := profiler.EnableRuntimeCallStats()
+	return b.Do(doProfiler.ctxWithExecutor)
+}
+
+// DisableRuntimeCallStats disable run time call stats collection.
+//
+// See: https://chromedevtools.github.io/devtools-protocol/tot/Profiler#method-disableRuntimeCallStats
+func (doProfiler Profiler) DisableRuntimeCallStats() (err error) {
+	b := profiler.DisableRuntimeCallStats()
+	return b.Do(doProfiler.ctxWithExecutor)
+}
+
+// GetRuntimeCallStats retrieve run time call stats.
+//
+// See: https://chromedevtools.github.io/devtools-protocol/tot/Profiler#method-getRuntimeCallStats
+//
+// returns:
+//  - `retResult`: Collected counter information.
+func (doProfiler Profiler) GetRuntimeCallStats() (retResult []*profiler.CounterInfo, err error) {
+	b := profiler.GetRuntimeCallStats()
 	return b.Do(doProfiler.ctxWithExecutor)
 }
