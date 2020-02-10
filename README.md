@@ -1,6 +1,7 @@
 # Chromebot
 
 [![GoDoc](https://godoc.org/github.com/nanitefactory/chromebot?status.svg)](https://godoc.org/github.com/nanitefactory/chromebot)
+[![Build Status](https://travis-ci.org/NaniteFactory/chromebot.svg?branch=master)](https://travis-ci.org/NaniteFactory/chromebot)
 
 Package `chromebot` provides a high-level interface to automate tasks in Chrome or Chromium. Work based on [chromedp](https://github.com/chromedp/chromedp).
 
